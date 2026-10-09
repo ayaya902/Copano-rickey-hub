@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+/* マテリアルデザイン風のシャドウとトランジション */
+.md-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.md-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+/* ファーストビュー用：薄く優しいパステルカラー（単色・角丸） */
+.rickey-pastel-header {
+  background-color: #FEF3C7; /* パステルイエロー */
+  border: 2px solid #FDE68A;
+}
+
+/* タイトル用：丸ゴシック ＋ ほんの少しの影 */
+.rickey-title {
+  font-family: 'M PLUS Rounded 1c', 'Hiragino Maru Gothic ProN', 'Rounded Mplus 1c', sans-serif;
+  text-shadow: 0 2px 4px rgba(153, 27, 27, 0.14);
+}
+
+/* キャラクターストーリー用バッジ */
+.badge-chara {
+  background-color: #FEF3C7;
+  color: #991B1B;
+  border: 1px solid #FDE68A;
+}
+
+/* 育成ストーリー用バッジ */
+.badge-training {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* 検索ハイライト */
+mark.highlight {
+  background-color: #FDE68A;
+  color: #991B1B;
+  font-weight: 600;
+  padding: 0 2px;
+  border-radius: 0.25rem;
+}
+
+/* 下部セクション：スマホは縦1列、PC（640px以上）は確実に横並び2列 */
+.bottom-two-col {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .bottom-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
