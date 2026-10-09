@@ -1,4 +1,3 @@
-[index.html](https://github.com/user-attachments/files/33263760/index.html)
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- 外部CSSファイルの参照（ファイル名を style.css に修正） -->
+  <!-- 外部CSSファイルの参照 -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen font-sans antialiased">
@@ -62,6 +61,13 @@
 
       <!-- 検索結果リスト -->
       <div id="resultsContainer" class="space-y-3 max-h-[500px] overflow-y-auto pr-1"></div>
+      
+      <!-- もっと見るボタン（新規追加） -->
+      <div id="loadMoreContainer" class="hidden text-center mt-2 pb-2">
+        <button id="loadMoreBtn" class="px-6 py-2 bg-white border border-slate-300 rounded-full text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-red-700 shadow-sm transition">
+          もっと見る（あと <span id="remainingCount"></span> 件）
+        </button>
+      </div>
     </section>
 
     <!-- 2. 下部2カラムセクション（スマホ：縦並び ／ PC：横並び［左：URL一覧・右：産駒出走情報］） -->
@@ -149,7 +155,7 @@
 
   </main>
 
-  <!-- 外部JavaScriptファイルの参照（ファイル名を script.js に修正） -->
+  <!-- 外部JavaScriptファイルの参照 -->
   <script src="script.js"></script>
 </body>
 </html>
