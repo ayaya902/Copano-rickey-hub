@@ -1,5 +1,5 @@
 // ==========================================
-// 1. ボイス検索機能
+// 1. ボイス検索機能（もっと見る機能追加版）
 // ==========================================
 
 // キャラクターストーリー（第1話〜第7話）
@@ -125,27 +125,46 @@ const characterStoryData = [
   { id: "ep07_018", category: "キャラクターストーリー", episode: "第7話", timestamp: "00:42:35", text: "気づいてないかもしれないけど、私も最近気づいたんだけど……君って、私のお守りなんだよ。君がいるだけで私はラッキー！ 私の人生は、きっともっともっと素敵になる！ だから、だからね、これからも私のそばにいてね。私のこと、支えてね！" }
 ];
 
-// 育成ストーリー（抽出データが準備でき次第ここに追加）
+// 育成ストーリー
 const trainingStoryData = [
   { id: "tr_001", category: "育成ストーリー", episode: "前編", timestamp: "00:00:00", text: "ねっ、すごいでしょ！？ だから私と風水始めてみない？ ね？ ね？" }
 ];
 
 const quotesData = [...characterStoryData, ...trainingStoryData];
 
+// --- 検索・もっと見る機能用の変数 ---
 const searchInput = document.getElementById('searchInput');
 const resultsContainer = document.getElementById('resultsContainer');
 const resultCount = document.getElementById('resultCount');
 const catButtons = document.querySelectorAll('.cat-btn');
+
+// もっと見るボタン関連の要素
+const loadMoreContainer = document.getElementById('loadMoreContainer');
+const loadMoreBtn = document.getElementById('loadMoreBtn');
+const remainingCountSpan = document.getElementById('remainingCount');
+
+const INITIAL_DISPLAY_COUNT = 5; // 初回・リセット時に表示する件数
+const LOAD_MORE_COUNT = 10;      // ボタンを押した時に追加で表示する件数
+let currentDisplayLimit = INITIAL_DISPLAY_COUNT;
+let currentFilteredData = [];
 let selectedCategory = 'all';
+// --------------------------------
 
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-function renderResults() {
+// 検索・フィルタリング処理と描画
+// resetLimit が true の場合、表示上限を初期値(5件)に戻す
+function renderResults(resetLimit = false) {
+  if (resetLimit) {
+    currentDisplayLimit = INITIAL_DISPLAY_COUNT;
+  }
+
   const query = searchInput.value.trim();
 
-  const filtered = quotesData.filter(item => {
+  // 条件に合うデータをすべて抽出
+  currentFilteredData = quotesData.filter(item => {
     const matchCat = selectedCategory === 'all' || item.category === selectedCategory;
     const matchQuery = !query ||
       item.text.toLowerCase().includes(query.toLowerCase()) ||
@@ -154,18 +173,23 @@ function renderResults() {
     return matchCat && matchQuery;
   });
 
-  resultCount.textContent = `${filtered.length} 件`;
+  resultCount.textContent = `${currentFilteredData.length} 件`;
 
-  if (filtered.length === 0) {
+  // 該当なしの場合
+  if (currentFilteredData.length === 0) {
     resultsContainer.innerHTML = `
       <div class="md-card p-8 text-center text-slate-400 text-sm">
         該当するセリフが見つかりません
       </div>
     `;
+    loadMoreContainer.classList.add('hidden'); // ボタンを隠す
     return;
   }
 
-  resultsContainer.innerHTML = filtered.map(item => {
+  // 表示上限までのデータを切り出してHTMLを生成
+  const dataToDisplay = currentFilteredData.slice(0, currentDisplayLimit);
+
+  resultsContainer.innerHTML = dataToDisplay.map(item => {
     let displayText = item.text;
     if (query) {
       const regex = new RegExp(`(${escapeRegExp(query)})`, 'gi');
@@ -187,8 +211,18 @@ function renderResults() {
       </div>
     `;
   }).join('');
+
+  // 「もっと見る」ボタンの表示制御
+  const remainingCount = currentFilteredData.length - currentDisplayLimit;
+  if (remainingCount > 0) {
+    loadMoreContainer.classList.remove('hidden');
+    remainingCountSpan.textContent = remainingCount;
+  } else {
+    loadMoreContainer.classList.add('hidden');
+  }
 }
 
+// イベントリスナーの登録
 if (catButtons.length > 0) {
   catButtons.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -197,15 +231,24 @@ if (catButtons.length > 0) {
         b.className = 'cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-amber-100 transition';
       });
       btn.className = 'cat-btn px-3.5 py-1.5 rounded-lg text-xs font-bold bg-amber-400 text-amber-950 transition';
-      renderResults();
+      renderResults(true); // タブ切り替え時にリセット
     });
   });
 }
 
 if (searchInput) {
-  searchInput.addEventListener('input', renderResults);
-  renderResults();
+  searchInput.addEventListener('input', () => renderResults(true)); // 入力時にリセット
 }
+
+if (loadMoreBtn) {
+  loadMoreBtn.addEventListener('click', () => {
+    currentDisplayLimit += LOAD_MORE_COUNT;
+    renderResults(false); // ボタンを押したときはリセットせず追記
+  });
+}
+
+// 初期描画
+renderResults(true);
 
 
 // ==========================================
