@@ -1,0 +1,28 @@
+name: Auto Run Rickey Scraper
+
+on:
+  schedule:
+    # 毎週金・土の昼12:00（JST）に実行（日本時間12:00 = UTC 03:00）
+    - cron: '0 3 * * 5,6'
+  workflow_dispatch:
+
+jobs:
+  run-scraper:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run Scraper
+        env:
+          MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        run: python scraper.py
