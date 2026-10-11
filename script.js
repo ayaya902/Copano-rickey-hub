@@ -256,7 +256,7 @@ renderResults(true);
 // ==========================================
 
 // GASのWebアプリURL（スプレッドシート経由の場合）またはJSONファイルのパス
-const DATA_URL = "ここにGASのウェブアプリURL、または rickey_entries.json のURL";
+const DATA_URL = "./rickey_entries.json";
 
 // カード描画用関数
 function renderEntryCards(data) {
